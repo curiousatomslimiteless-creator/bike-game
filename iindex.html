@@ -2,802 +2,477 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>⚡ EXTREME BIKE RIDER ⚡ | JUMP · COMBO · POWERUPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einstein Mind Game - Akshay Kumar, Kortlagudem</title>
     <style>
+        :root {
+            --bg-color: #050508;
+            --panel-bg: rgba(15, 22, 38, 0.85);
+            --accent-color: #00f2ff;
+            --text-color: #ffffff;
+            --transition-speed: 0.8s;
+        }
+
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            user-select: none;
         }
 
         body {
-            background: linear-gradient(135deg, #0a1f2e 0%, #07121c 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', 'Courier New', 'Press Start 2P', monospace;
+            flex-direction: column;
+            transition: background var(--transition-speed) ease;
+            background-image: radial-gradient(circle at 50% 50%, #111936 0%, #050508 100%);
+        }
+
+        /* Game State Backgrounds */
+        body.state-initial {
+            background-image: radial-gradient(circle at 50% 50%, #1a2238 0%, #050508 100%);
+        }
+        body.state-moon-change {
+            background-image: url('https://unsplash.com');
+            background-size: cover;
+            background-position: center;
+        }
+        body.state-earth {
+            background-image: url('https://unsplash.com');
+            background-size: cover;
+            background-position: center;
+        }
+
+        header {
+            background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%);
             padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            z-index: 10;
         }
 
-        .game-container {
-            background: #0f2a2c;
-            border-radius: 56px;
-            padding: 20px 25px 25px 25px;
-            box-shadow: 0 25px 40px rgba(0,0,0,0.6), inset 0 1px 2px rgba(255,255,255,0.1);
+        header h1 {
+            font-size: 24px;
+            letter-spacing: 2px;
+            color: var(--accent-color);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
 
-        canvas {
-            display: block;
+        header p {
+            font-size: 12px;
+            color: #8a99ad;
+            margin-top: 5px;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            max-width: 1600px;
             margin: 0 auto;
-            border-radius: 28px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            cursor: pointer;
-            background-color: #8ecfc0;
+            padding: 20px;
+            gap: 20px;
         }
 
-        .info-panel {
+        /* Left Side: 3D Book Layout */
+        .history-sider {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            perspective: 1000px;
+        }
+
+        .book-container {
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+        }
+
+        .book-page {
+            background: #161f33;
+            border-left: 5px solid var(--accent-color);
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.3);
+            margin-bottom: 15px;
+            transform: rotateX(2deg);
+        }
+
+        .book-page h3 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            border-bottom: 1px solid rgba(0, 242, 255, 0.2);
+            padding-bottom: 5px;
+            font-size: 16px;
+        }
+
+        .book-page ul {
+            list-style: none;
+        }
+
+        .book-page li {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 8px;
+            color: #d1d9e6;
+        }
+
+        .book-page strong {
+            color: #ffffff;
+        }
+
+        /* Right Side: Mind Game Panel */
+        .game-sider {
+            flex: 1;
+            background: var(--panel-bg);
+            border: 2px solid rgba(0, 242, 255, 0.2);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .score-board {
             display: flex;
             justify-content: space-between;
+            background: rgba(0,0,0,0.4);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .score-box {
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #8a99ad;
+        }
+
+        .score-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent-color);
+        }
+
+        /* Visual Media Frame */
+        .photo-frame {
+            width: 100%;
+            height: 220px;
+            background: #0b111e;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
             align-items: center;
-            margin-top: 20px;
-            gap: 15px;
-            flex-wrap: wrap;
-            background: #1a2f28e0;
-            backdrop-filter: blur(6px);
-            padding: 10px 20px;
-            border-radius: 60px;
-            border: 1px solid #ffd966aa;
+            justify-content: center;
         }
 
-        .stats {
-            display: flex;
-            gap: 20px;
-            background: #0b1a15;
-            padding: 5px 18px;
-            border-radius: 40px;
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0.8;
+            transition: opacity 0.3s ease;
         }
 
-        .stat {
-            font-family: 'Courier New', monospace;
+        .prize-banner {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(0deg, rgba(0,242,255,0.9) 0%, rgba(0,0,0,0) 100%);
+            padding: 10px;
+            text-align: center;
             font-weight: bold;
-            font-size: 1.4rem;
-            background: #00000066;
-            padding: 5px 16px;
-            border-radius: 2rem;
-            color: #f9e45b;
-            text-shadow: 0 2px 0 #5a3e00;
+            font-size: 14px;
+            color: #000;
+            display: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .stat span {
-            color: #ffd966;
-            font-size: 1.7rem;
-            font-weight: 900;
-            margin-right: 8px;
-        }
-
-        button {
-            background: #f39c12;
-            border: none;
-            font-family: 'Segoe UI', monospace;
-            font-weight: bold;
-            font-size: 1.1rem;
-            padding: 8px 24px;
-            border-radius: 40px;
-            cursor: pointer;
-            color: #1e2a1c;
-            font-weight: 900;
-            transition: 0.2s;
-            box-shadow: 0 5px 0 #b4621a;
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(3px);
-            box-shadow: 0 1px 0 #b4621a;
-        }
-
-        .controls {
+        .quiz-container {
+            flex: 1;
             display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr;
             gap: 12px;
-            background: #00000055;
-            padding: 5px 18px;
-            border-radius: 80px;
-            align-items: center;
-            font-size: 0.85rem;
-            font-weight: bold;
-            color: #f0e6a0;
         }
 
-        .controls kbd {
-            background: #2c2c2c;
-            padding: 4px 12px;
-            border-radius: 30px;
-            font-size: 1rem;
-            font-weight: bold;
-            color: #ffd966;
-            margin: 0 5px;
-            box-shadow: inset 0 1px 0 0 #5f5f5f, 0 1px 2px black;
+        .option-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 6px;
+            color: #fff;
+            text-align: left;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .combo-highlight {
-            background: #ffaa33cc;
-            border-radius: 40px;
-            padding: 4px 14px;
-            font-weight: bold;
-            font-size: 1.2rem;
+        .option-btn:hover {
+            background: rgba(0, 242, 255, 0.1);
+            border-color: var(--accent-color);
+            transform: translateX(5px);
         }
 
-        @media (max-width: 780px) {
-            .stat { font-size: 1rem; padding: 4px 12px; }
-            .stat span { font-size: 1.3rem; }
-            button { padding: 5px 16px; font-size: 1rem; }
-            .controls kbd { padding: 2px 8px; }
+        .feedback-message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback-correct {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
+            border: 1px solid #2ecc71;
+        }
+
+        .feedback-wrong {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
-<body>
-<div>
-    <div class="game-container">
-        <canvas id="gameCanvas" width="1000" height="500"></canvas>
-        <div class="info-panel">
-            <div class="stats">
-                <div class="stat"><span>🏆</span> <span id="scoreValue">0</span></div>
-                <div class="stat"><span>⚡</span> <span id="speedValue">5.0</span></div>
-                <div class="stat"><span>🔥</span> <span id="comboValue">x1</span></div>
-                <div class="stat"><span>🏅</span> <span id="bestValue">0</span></div>
+<body class="state-initial">
+
+    <header>
+        <h1>ALBERT EINSTEIN: THE HISTORICAL MIND CHALLENGE</h1>
+        <p>Created by Akshay Kumar • Village: Kortlagudem • Dark Web Logic Engine</p>
+    </header>
+
+    <div class="main-container">
+        <!-- LEFT SIDE: 3D HISTORY BOOK SIDER -->
+        <div class="history-sider">
+            <div class="book-container">
+                <div class="book-page">
+                    <h3>Albert Einstein (1879 – 1955)</h3>
+                    <p style="font-size: 13px; color: #a1b0cb; line-height: 1.5;">
+                        German-born theoretical physicist widely held to be one of the greatest and most influential scientists of all time. Best known for developing the theory of relativity and major contributions to quantum mechanics. Won the 1921 Nobel Prize in Physics.
+                    </p>
+                </div>
+
+                <div class="book-page">
+                    <h3>1. Early Life and Education (1879–1900)</h3>
+                    <ul>
+                        <li><strong>Birth:</strong> Born into a Jewish family in Ulm, Germany. Moved to Munich shortly after.</li>
+                        <li><strong>Speech Delay:</strong> Started speaking late, around the age of four, worrying his parents.</li>
+                        <li><strong>The Compass:</strong> At age five, a pocket compass sparked his lifelong interest in the invisible forces of physics.</li>
+                        <li><strong>Schooling:</strong> Hated strict teaching styles but excelled at mathematics and physics.</li>
+                        <li><strong>Higher Studies:</strong> Graduated from Swiss Federal Polytechnic School in Zürich in 1900.</li>
+                    </ul>
+                </div>
+
+                <div class="book-page">
+                    <h3>2. The Patent Office & Miracle Year (1901–1905)</h3>
+                    <ul>
+                        <li><strong>Employment:</strong> Worked as a technical clerk at the Swiss Patent Office in Bern.</li>
+                        <li><strong>Marriage:</strong> Married college classmate Mileva Marić in 1903. Had three children.</li>
+                        <li><strong>The Miracle Year (1905):</strong> Published 4 groundbreaking papers: Photoelectric Effect, Brownian Motion, Special Relativity, and Mass-Energy Equivalence ($E=mc^2$).</li>
+                    </ul>
+                </div>
+
+                <div class="book-page">
+                    <h3>3. Rise to Global Fame (1906–1932)</h3>
+                    <ul>
+                        <li><strong>General Relativity (1915):</strong> Showed gravity is the bending of space and time caused by massive objects.</li>
+                        <li><strong>Superstardom:</strong> Confirmed by British scientists during a solar eclipse in 1919.</li>
+                        <li><strong>Nobel Prize:</strong> Awarded the 1921 Nobel Prize in Physics for the Photoelectric Effect.</li>
+                    </ul>
+                </div>
+
+                <div class="book-page">
+                    <h3>4. Escape to America & Later Years (1933–1955)</h3>
+                    <ul>
+                        <li><strong>Exile:</strong> Fled Nazi Germany in 1933. Settled at the Institute for Advanced Study in Princeton.</li>
+                        <li><strong>Atomic Bomb Letter:</strong> Signed a warning letter to President Roosevelt in 1939, later advocating deeply for nuclear disarmament.</li>
+                        <li><strong>Passing:</strong> Died on 18 April 1955 at age 76 from an abdominal aortic aneurysm.</li>
+                    </ul>
+                </div>
             </div>
-            <div class="controls">
-                <kbd>▲ UP / SPACE</kbd> JUMP &nbsp;&nbsp;|&nbsp; <kbd>R</kbd> RESTART
+        </div>
+
+        <!-- RIGHT SIDE: INTERACTIVE QUESTIONER & ANSWER SYSTEM -->
+        <div class="game-sider">
+            <div class="score-board">
+                <div class="score-box">
+                    <div class="score-label">Correct Answers</div>
+                    <div class="score-value" id="correct-count">0</div>
+                </div>
+                <div class="score-box">
+                    <div class="score-label">Current Zone</div>
+                    <div class="score-value" id="zone-display" style="font-size: 14px; margin-top:6px; color:#00f2ff;">Deep Space</div>
+                </div>
             </div>
-            <button id="restartButton">🔄 RESTART BIKE</button>
+
+            <!-- Contextual Photo Engine -->
+            <div class="photo-frame">
+                <img id="game-photo" src="https://unsplash.com" alt="Game State Visual">
+                <div class="prize-banner" id="prize-banner">⚡ LEVEL PRIZE UNLOCKED! ⚡</div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="question-text" id="question-text">Loading game data...</div>
+                <div class="options-grid" id="options-grid"></div>
+                <div class="feedback-message" id="feedback-box"></div>
+            </div>
         </div>
     </div>
-    <div style="text-align: center; margin-top: 16px; font-family: monospace; color: #ccefe2; font-weight: bold; font-size: 13px;">
-        ✨ COLLECT COINS + SHIELD → INVINCIBLE! | COMBO = MORE POINTS | SURVIVE THE RUSH ✨
-    </div>
-</div>
 
-<script>
-    (function() {
-        // ---------- CANVAS ----------
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const W = 1000, H = 500;
-        const GROUND_Y = 430;
+    <script>
+        // Comprehensive Question Bank generated from provided history data
+        const questionPool = [
+            { q: "In which city was Albert Einstein born?", a: ["Ulm, Germany", "Munich", "Zürich", "Bern"], c: 0 },
+            { q: "What childhood object deeply fascinated Einstein and sparked his interest in physics?", a: ["A telescope", "A pocket compass", "A prism", "A mechanical clock"], c: 1 },
+            { q: "What worried Einstein's parents during his early childhood?", a: ["Poor math skills", "His speech delay until age four", "Rebellion at school", "Health problems"], c: 1 },
+            { q: "From which institution did Einstein graduate in 1900?", a: ["University of Berlin", "Cambridge University", "Swiss Federal Polytechnic School", "Princeton University"], c: 2 },
+            { q: "What was Einstein's job role at the Swiss Patent Office in Bern?", a: ["Chief Executive", "Technical Clerk", "Research Director", "Physics Instructor"], c: 1 },
+            { q: "Who did Albert Einstein marry in 1903?", a: ["Elsa Löwenthal", "Mileva Marić", "Marie Curie", "Lieserl Einstein"], c: 1 },
+            { q: "How many groundbreaking papers did Einstein publish during his 1905 'Miracle Year'?", a: ["Two", "Three", "Four", "Five"], c: 2 },
+            { q: "Which paper mathematically proved the actual physical existence of atoms and molecules?", a: ["Photoelectric Effect", "Brownian Motion", "Special Relativity", "General Relativity"], c: 1 },
+            { q: "What formula expresses the concept of Mass-Energy Equivalence?", a: ["F = ma", "E = mc²", "PV = nRT", "A = πr²"], c: 1 },
+            { q: "Einstein's 1915 Theory of General Relativity describes gravity as what?", a: ["An instantaneous magnetic pull", "The bending or warping of space and time", "Subatomic particle exchange", "An illusion of friction"], c: 1 },
+            { q: "Which event confirmed Einstein's General Relativity equations to the global public in 1919?", a: ["A laboratory particle collision", "A solar eclipse observation", "A deep-sea tidal measurement", "A volcanic eruption analysis"], c: 1 },
+            { q: "For which specific discovery did Einstein win the 1921 Nobel Prize in Physics?", a: ["Theory of General Relativity", "The formulation of E=mc²", "His work on the Photoelectric Effect", "The Discovery of Quantum Entanglement"], c: 2 },
+            { q: "Who did Einstein marry in 1919 after his divorce from Mileva?", a: ["Elsa Löwenthal", "Lieserl Marić", "Eduard Löwenthal", "Annetta Ulm"], c: 0 },
+            { q: "Why did Albert Einstein leave Germany forever in the year 1933?", a: ["He accepted a teaching job in London", "Adolf Hitler and the Nazi regime came to power", "He wanted to retire from physics", "To travel South America"], c: 1 },
+            { q: "Which research institute in Princeton, New Jersey did Einstein join?", a: ["The Manhattan Institute", "The Institute for Advanced Study", "The National Laboratory", "The Eddington Academy"], c: 1 },
+            { q: "In what year did Albert Einstein officially become an American citizen?", a: ["1933", "1935", "1940", "1955"], c: 2 },
+            { q: "What historic action did Einstein take in 1939 regarding the development of military technology?", a: ["He built a laboratory prototype", "He signed a warning letter to US President Roosevelt", "He refused to speak to politicians", "He joined the active Navy"], c: 1 },
+            { q: "What was the core goal of Einstein's uncompleted final decades of research?", a: ["A method for time travel", "A single mathematical Unified Theory of Everything", "An efficient industrial combustion engine", "A blueprint for communication arrays"], c: 1 },
+            { q: "What physical complication led directly to Einstein's passing in 1955?", a: ["A ruptured abdominal blood vessel", "Severe respiratory influenza", "A fall inside his study", "An uncurable neurological disorder"], c: 0 },
+            { q: "What age was Albert Einstein when he passed away in Princeton?", a: ["66", "72", "76", "81"], c: 2 }
+        ];
 
-        // ---------- BIKE & PHYSICS ----------
-        const BIKE_FIXED_X = 140;
-        const BIKE_COLLIDE_W = 44;
-        const BIKE_COLLIDE_H = 30;
-        const GROUND_COLLIDE_Y = GROUND_Y - BIKE_COLLIDE_H;
+        let correctCount = 0;
+        let currentIndex = 0;
 
-        let jumpOffset = 0;
-        let velY = 0;
-        let isGrounded = true;
-        const GRAVITY = 0.68;
-        const JUMP_POWER = -10.4;
+        const imgSpace = "https://unsplash.com";
+        const imgMoon = "https://unsplash.com";
+        const imgEarth = "https://unsplash.com";
+        const imgEinstein = "https://unsplash.com"; 
 
-        // ---------- GAME STATE ----------
-        let gameActive = true;
-        let score = 0;
-        let currentSpeed = 5.0;
-        let highScore = 0;
-
-        // Combo system
-        let combo = 1;
-        let obstaclesClearedWithoutHit = 0;
-        let lastObstaclePassedId = -1;
-
-        // Power-ups & collectibles
-        let shieldActive = false;
-        let shieldTimer = 0;        // frames remaining
-        let shieldBlink = false;
-
-        // ---------- ENTITIES ----------
-        let obstacles = [];      // dangerous objects
-        let coins = [];          // collectibles
-        let powerups = [];       // shield orbs
-
-        let entityId = 1000;
-        let spawnTimer = 0;
-        
-        // effects
-        let particles = [];
-        let floatingTexts = [];
-
-        // scroll & bg
-        let bgOffset = 0;
-        let fastLineOffset = 0;
-
-        // UI elements
-        const scoreElem = document.getElementById('scoreValue');
-        const speedElem = document.getElementById('speedValue');
-        const comboElem = document.getElementById('comboValue');
-        const bestElem = document.getElementById('bestValue');
-
-        // Helper: update UI
-        function updateUI() {
-            scoreElem.innerText = Math.floor(score);
-            speedElem.innerText = currentSpeed.toFixed(1);
-            comboElem.innerText = `x${Math.min(combo, 4)}`;
-            if (Math.floor(score) > highScore) {
-                highScore = Math.floor(score);
-                bestElem.innerText = highScore;
-                localStorage.setItem('bikeHighScore', highScore);
-            }
-        }
-
-        // Load highscore
-        try {
-            let saved = localStorage.getItem('bikeHighScore');
-            if (saved && !isNaN(parseInt(saved))) highScore = parseInt(saved);
-            bestElem.innerText = highScore;
-        } catch(e) {}
-
-        // ---------- ENTITIES CREATE ----------
-        function spawnObstacle() {
-            let variant = Math.floor(Math.random() * 3); // 0: log, 1: spike block, 2: double rock
-            let width = variant === 2 ? 34 : 26;
-            let height = 34;
-            obstacles.push({
-                x: W,
-                y: GROUND_Y - height,
-                w: width,
-                h: height,
-                id: entityId++,
-                type: 'obstacle',
-                variant: variant,
-                passed: false
-            });
-        }
-
-        function spawnCoin() {
-            coins.push({
-                x: W,
-                y: GROUND_Y - 38 - Math.random() * 22,
-                w: 14,
-                h: 14,
-                id: entityId++,
-                type: 'coin',
-                collected: false
-            });
-        }
-
-        function spawnShield() {
-            powerups.push({
-                x: W,
-                y: GROUND_Y - 44,
-                w: 24,
-                h: 24,
-                id: entityId++,
-                type: 'shield',
-                collected: false
-            });
-        }
-
-        // particle effect
-        function addParticle(x, y, color) {
-            particles.push({
-                x: x, y: y, vx: (Math.random() - 0.5) * 4, vy: Math.random() * -3 - 1,
-                life: 15, maxLife: 15, color: color, size: 4
-            });
-        }
-
-        function addFloatingText(x, y, text, color = '#ffd966') {
-            floatingTexts.push({
-                x: x, y: y, text: text, life: 30, color: color, vy: -1.2
-            });
-        }
-
-        // ---------- RESET GAME ----------
-        function resetGame() {
-            gameActive = true;
-            score = 0;
-            currentSpeed = 5.0;
-            obstacles = [];
-            coins = [];
-            powerups = [];
-            particles = [];
-            floatingTexts = [];
-            combo = 1;
-            obstaclesClearedWithoutHit = 0;
-            shieldActive = false;
-            shieldTimer = 0;
-            jumpOffset = 0;
-            velY = 0;
-            isGrounded = true;
-            spawnTimer = 15;
-            updateUI();
-        }
-
-        // ---------- COLLISION & LOGIC UPDATES ----------
-        function getBikeRect() {
-            return {
-                x: BIKE_FIXED_X,
-                y: GROUND_COLLIDE_Y + jumpOffset,
-                w: BIKE_COLLIDE_W,
-                h: BIKE_COLLIDE_H
-            };
-        }
-
-        function updateGame() {
-            if (!gameActive) return;
-
-            // ----- physics -----
-            if (!isGrounded) {
-                velY += GRAVITY;
-                jumpOffset += velY;
-                if (jumpOffset >= 0) {
-                    jumpOffset = 0;
-                    velY = 0;
-                    isGrounded = true;
-                    // landing dust
-                    addParticle(BIKE_FIXED_X + 20, GROUND_Y - 5, '#c0a080');
-                }
-            } else {
-                jumpOffset = 0;
-                velY = 0;
+        function renderQuestion() {
+            if (currentIndex >= questionPool.length) {
+                currentIndex = 0; // Infinite loop through bank to maintain continuous editing layout
             }
 
-            // ----- move all entities leftwards -----
-            const moveStep = currentSpeed;
-            obstacles.forEach(obs => obs.x -= moveStep);
-            coins.forEach(coin => coin.x -= moveStep);
-            powerups.forEach(pow => pow.x -= moveStep);
+            const currentData = questionPool[currentIndex];
+            document.getElementById("question-text").innerText = `Q${currentIndex + 1}: ${currentData.q}`;
             
-            // remove offscreen
-            obstacles = obstacles.filter(obs => obs.x + obs.w > 0);
-            coins = coins.filter(coin => coin.x + coin.w > 0);
-            powerups = powerups.filter(pow => pow.x + pow.w > 0);
+            const optionsGrid = document.getElementById("options-grid");
+            optionsGrid.innerHTML = "";
+            
+            currentData.a.forEach((option, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = option;
+                btn.onclick = () => evaluateAnswer(index, currentData.c);
+                optionsGrid.appendChild(btn);
+            });
 
-            // ----- update shield timer -----
-            if (shieldActive) {
-                shieldTimer--;
-                if (shieldTimer <= 0) {
-                    shieldActive = false;
-                    addFloatingText(BIKE_FIXED_X, GROUND_Y - 70, 'SHIELD EXPIRED', '#ffaa66');
-                }
-            }
+            document.getElementById("feedback-box").style.display = "none";
+        }
 
-            // ----- COMBO & SCORE from passing obstacles -----
-            for (let i = 0; i < obstacles.length; i++) {
-                const obs = obstacles[i];
-                if (!obs.passed && (obs.x + obs.w) < BIKE_FIXED_X) {
-                    obs.passed = true;
-                    // increase combo streak
-                    obstaclesClearedWithoutHit++;
-                    let newCombo = 1 + Math.floor(obstaclesClearedWithoutHit / 6);
-                    if (newCombo > 4) newCombo = 4;
-                    combo = newCombo;
-                    let addPoints = 10 * combo;
-                    score += addPoints;
-                    addFloatingText(obs.x + 10, obs.y - 10, `+${addPoints}`, '#f5dd42');
-                    addParticle(obs.x + obs.w/2, obs.y, '#e7b42c');
-                    updateUI();
-                }
-            }
+        function evaluateAnswer(selectedIndex, correctIndex) {
+            const feedbackBox = document.getElementById("feedback-box");
+            feedbackBox.style.display = "block";
 
-            // ----- collect coins -----
-            const bikeRect = getBikeRect();
-            for (let i=0; i<coins.length; i++) {
-                const coin = coins[i];
-                if (!coin.collected) {
-                    const coinRect = {x: coin.x, y: coin.y, w: coin.w, h: coin.h};
-                    if (rectCollide(bikeRect, coinRect)) {
-                        coin.collected = true;
-                        let coinValue = 5 + Math.floor(combo * 1.5);
-                        score += coinValue;
-                        addFloatingText(coin.x, coin.y, `+${coinValue} 🪙`, '#f5bc70');
-                        addParticle(coin.x+6, coin.y+6, '#ffcc44');
-                        updateUI();
-                    }
-                }
-            }
-
-            // ----- collect powerups (shield) -----
-            for (let i=0; i<powerups.length; i++) {
-                const p = powerups[i];
-                if (!p.collected) {
-                    const pRect = {x: p.x, y: p.y, w: p.w, h: p.h};
-                    if (rectCollide(bikeRect, pRect)) {
-                        p.collected = true;
-                        shieldActive = true;
-                        shieldTimer = 240;   // ~4 sec at 60fps
-                        addFloatingText(p.x, p.y, '🛡️ SHIELD!', '#88ddff');
-                        addParticle(p.x+12, p.y+12, '#7bc5ff');
-                        updateUI();
-                    }
-                }
-            }
-
-            // ----- collision with obstacles (only if no shield) -----
-            if (!shieldActive) {
-                for (let i = 0; i < obstacles.length; i++) {
-                    const obs = obstacles[i];
-                    const obsRect = {x: obs.x, y: obs.y, w: obs.w, h: obs.h};
-                    if (rectCollide(bikeRect, obsRect)) {
-                        gameActive = false;
-                        addFloatingText(BIKE_FIXED_X, GROUND_Y - 80, '💥 CRASH!', '#ff4444');
-                        for(let s=0;s<12;s++) addParticle(BIKE_FIXED_X+20, GROUND_Y-20, '#a52222');
-                        updateUI();
-                        if (Math.floor(score) > highScore) {
-                            highScore = Math.floor(score);
-                            bestElem.innerText = highScore;
-                            localStorage.setItem('bikeHighScore', highScore);
-                        }
-                        return;
-                    }
-                }
-            } else {
-                // if shield active, show blink but no death, but also we DON'T increase combo because obstacle is not cleared? wait, obstacle passing is already counted
-                // But shield: when colliding, we just play effect without death. But to avoid multiple collisions, we skip but also prevent combo reset. 
-                // However, we shouldn't reset combo because shield protects. But since we are not dying, we still want to "ignore" collision but not break streak.
-                // For each colliding obstacle, we can refund? Actually easier: if shield active, we skip collision but remove that obstacle? Not fair. But we could 'destroy' obstacle to avoid infinite collisions.
-                // To make shield useful: upon collision with shield active, destroy the obstacle and add small points.
-                for (let i=0; i<obstacles.length; i++) {
-                    const obs = obstacles[i];
-                    const obsRect = {x: obs.x, y: obs.y, w: obs.w, h: obs.h};
-                    if (rectCollide(bikeRect, obsRect) && !obs.passed) {
-                        // shield block: destroy obstacle & give bonus, not dying
-                        obstacles.splice(i,1);
-                        addFloatingText(obs.x, obs.y, '🛡️ BLOCK +5', '#aaffdd');
-                        score += 5;
-                        updateUI();
-                        i--; // adjust index
-                    }
-                }
-            }
-
-            // ----- dynamic speed increase based on score + combo -----
-            let targetSpeed = 5.0 + (score / 350);
-            if (targetSpeed > 13.5) targetSpeed = 13.5;
-            currentSpeed = targetSpeed;
-
-            // ----- spawn system (balanced) -----
-            if (spawnTimer <= 0) {
-                // Spawn obstacles frequently, plus occasional coins/powerups
-                let r = Math.random();
-                if (r < 0.6) spawnObstacle();
-                else if (r < 0.85) spawnCoin();
-                else if (r < 0.96 && !shieldActive) spawnShield();
+            if (selectedIndex === correctIndex) {
+                correctCount++;
+                document.getElementById("correct-count").innerText = correctCount;
+                feedbackBox.className = "feedback-message feedback-correct";
+                feedbackBox.innerText = "✓ CORRECT ANSWER! The mind matrix expands.";
                 
-                let dynamicDelay = Math.floor(75 - (currentSpeed - 5) * 3);
-                if (dynamicDelay < 38) dynamicDelay = 38;
-                if (dynamicDelay > 85) dynamicDelay = 85;
-                spawnTimer = dynamicDelay;
+                // Real-time structural adjustments based on milestones
+                processMilestones();
             } else {
-                spawnTimer--;
+                feedbackBox.className = "feedback-message feedback-wrong";
+                feedbackBox.innerText = "✗ INCORRECT! Scan the history panel on the left.";
             }
 
-            // update particles & texts
-            for (let i=0; i<particles.length; i++) {
-                particles[i].x += particles[i].vx;
-                particles[i].y += particles[i].vy;
-                particles[i].life--;
-                if(particles[i].life <= 0) particles.splice(i,1), i--;
-            }
-            for (let i=0; i<floatingTexts.length; i++) {
-                floatingTexts[i].y += floatingTexts[i].vy;
-                floatingTexts[i].life--;
-                if(floatingTexts[i].life <= 0) floatingTexts.splice(i,1), i--;
-            }
-            
-            // if combo not increased for a while but we keep? optional reset if crash not, but we reset combo when crash (gameActive false)
-            // reset combo only on game over, else stays
+            setTimeout(() => {
+                currentIndex++;
+                renderQuestion();
+            }, 1500);
         }
 
-        function rectCollide(r1, r2) {
-            return !(r2.x > r1.x + r1.w || r2.x + r2.w < r1.x || r2.y > r1.y + r1.h || r2.y + r2.h < r1.y);
-        }
+        function processMilestones() {
+            const body = document.body;
+            const photo = document.getElementById("game-photo");
+            const zone = document.getElementById("zone-display");
+            const banner = document.getElementById("prize-banner");
 
-        // ---------- DRAW EVERYTHING (Awesome visuals) ----------
-        function drawBackground() {
-            let skyGrad = ctx.createLinearGradient(0,0,0,300);
-            skyGrad.addColorStop(0, '#d9f0e5');
-            skyGrad.addColorStop(1, '#95cfbc');
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0,0,W,H);
-            // moving clouds
-            ctx.fillStyle = '#ffffddcc';
-            for(let i=0;i<5;i++) {
-                let cloudX = (bgOffset * 0.2 + i*220) % (W+200) - 100;
-                ctx.beginPath();
-                ctx.ellipse(cloudX, 70, 45, 35, 0, 0, Math.PI*2);
-                ctx.ellipse(cloudX+50, 55, 55, 40, 0, 0, Math.PI*2);
-                ctx.ellipse(cloudX-35, 60, 40, 32, 0, 0, Math.PI*2);
-                ctx.fill();
-            }
-            // distant hills
-            ctx.fillStyle = '#52826e';
-            ctx.beginPath();
-            ctx.moveTo(0,330);
-            ctx.bezierCurveTo(180,300, 400,350, 700,320);
-            ctx.lineTo(W,340);
-            ctx.lineTo(W,430);
-            ctx.lineTo(0,430);
-            ctx.fill();
-            ctx.fillStyle = '#3f6b58';
-            ctx.beginPath();
-            ctx.moveTo(0,360);
-            ctx.bezierCurveTo(250,340, 500,380, 800,355);
-            ctx.lineTo(W,370);
-            ctx.lineTo(W,430);
-            ctx.lineTo(0,430);
-            ctx.fill();
-            
-            // ground & road markings
-            ctx.fillStyle = '#8b6946';
-            ctx.fillRect(0, GROUND_Y-8, W, 12);
-            ctx.fillStyle = '#b87c3a';
-            ctx.fillRect(0, GROUND_Y-2, W, 4);
-            ctx.beginPath();
-            for(let i=0;i<18;i++) {
-                let dashX = (bgOffset + i * 55) % (W+60) - 30;
-                ctx.fillStyle = '#f5d742';
-                ctx.fillRect(dashX, GROUND_Y-6, 22, 3);
-            }
-            // speed lines (when fast)
-            if(currentSpeed > 9) {
-                ctx.beginPath();
-                for(let i=0;i<40;i++) {
-                    let sx = (fastLineOffset + i*37) % W;
-                    ctx.strokeStyle = `rgba(255,240,150,${0.4+Math.sin(Date.now()*0.01)*0.2})`;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(sx, GROUND_Y-20);
-                    ctx.lineTo(sx-20, GROUND_Y-40);
-                    ctx.stroke();
-                }
-                fastLineOffset = (fastLineOffset + currentSpeed*2) % 100;
+            if (correctCount >= 20) {
+                body.className = "state-earth";
+                photo.src = imgEarth;
+                zone.innerText = "Einstein Absolute Era";
+                banner.innerText = "🏆 GRAND PRIZE: EINSTEIN MASTER MATRIX UNLOCKED";
+                banner.style.display = "block";
+                banner.style.background = "linear-gradient(0deg, #ff007b 0%, rgba(0,0,0,0) 100%)";
+            } else if (correctCount >= 10) {
+                body.className = "state-earth";
+                photo.src = imgEarth;
+                zone.innerText = "Returned to Earth";
+                banner.innerText = "🎁 TIER 2 PRIZE: EARTH GRAVITY KEYS UNLOCKED";
+                banner.style.display = "block";
+                banner.style.background = "linear-gradient(0deg, #00ff6a 0%, rgba(0,0,0,0) 100%)";
+            } else if (correctCount >= 5) {
+                body.className = "state-moon-change";
+                photo.src = imgMoon;
+                zone.innerText = "Lunar Shift Active";
+                banner.innerText = "🎁 TIER 1 PRIZE: MOON ALTERATION COMPLETE";
+                banner.style.display = "block";
             }
         }
 
-        function drawObstacles() {
-            for(let obs of obstacles) {
-                if(obs.variant === 0) { // wood log
-                    ctx.fillStyle = '#6b4c3b';
-                    ctx.shadowBlur = 0;
-                    ctx.beginPath();
-                    ctx.roundRect(obs.x, obs.y, obs.w, obs.h, 8);
-                    ctx.fill();
-                    ctx.fillStyle = '#a5673f';
-                    for(let i=0;i<3;i++) ctx.fillRect(obs.x+5+i*7, obs.y+10, 4, 12);
-                } else if(obs.variant === 1) { // rock spikes
-                    ctx.fillStyle = '#5e5349';
-                    ctx.beginPath();
-                    ctx.rect(obs.x, obs.y+8, obs.w, obs.h-8);
-                    ctx.fill();
-                    ctx.fillStyle = '#8c7a6b';
-                    for(let s=0;s<3;s++) {
-                        ctx.beginPath();
-                        ctx.moveTo(obs.x+6+s*8, obs.y);
-                        ctx.lineTo(obs.x+10+s*8, obs.y+12);
-                        ctx.lineTo(obs.x+2+s*8, obs.y+12);
-                        ctx.fill();
-                    }
-                } else { // double barrier
-                    ctx.fillStyle = '#8b5a2b';
-                    ctx.fillRect(obs.x, obs.y, 16, obs.h);
-                    ctx.fillRect(obs.x+18, obs.y, 16, obs.h);
-                    ctx.fillStyle = '#c97e3a';
-                    ctx.fillRect(obs.x+3, obs.y+5, 10, 8);
-                    ctx.fillRect(obs.x+21, obs.y+5, 10, 8);
-                }
-            }
-        }
-
-        function drawCoins() {
-            for(let coin of coins) {
-                ctx.fillStyle = '#ffcf40';
-                ctx.shadowBlur = 6;
-                ctx.shadowColor = '#ffaa33';
-                ctx.beginPath();
-                ctx.ellipse(coin.x+coin.w/2, coin.y+coin.h/2, coin.w/2, coin.h/2, 0, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle = '#ffaa33';
-                ctx.beginPath();
-                ctx.ellipse(coin.x+coin.w/2, coin.y+coin.h/2, coin.w*0.3, coin.h*0.3, 0, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle = '#e5b800';
-                ctx.font = '12px monospace';
-                ctx.fillText('★', coin.x+4, coin.y+12);
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        function drawPowerups() {
-            for(let p of powerups) {
-                ctx.fillStyle = '#7ad0ff';
-                ctx.shadowBlur = 8;
-                ctx.beginPath();
-                ctx.arc(p.x+p.w/2, p.y+p.h/2, 12, 0, Math.PI*2);
-                ctx.fill();
-                ctx.fillStyle = '#ffffff';
-                ctx.font = 'bold 18px monospace';
-                ctx.fillText('🛡', p.x+5, p.y+18);
-                ctx.shadowBlur = 0;
-            }
-        }
-
-        function drawBike() {
-            const bikeY = GROUND_COLLIDE_Y + jumpOffset;
-            const wheelY = GROUND_Y;
-            ctx.save();
-            // shield glow effect
-            if (shieldActive && (Math.floor(Date.now() / 80) % 2 === 0)) {
-                ctx.shadowBlur = 16;
-                ctx.shadowColor = '#3affdd';
-            }
-            // wheels
-            ctx.beginPath();
-            ctx.arc(BIKE_FIXED_X+10, wheelY-6, 12, 0, Math.PI*2);
-            ctx.fillStyle = '#1f1f1f';
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(BIKE_FIXED_X+34, wheelY-6, 12, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = '#a5a5a5';
-            ctx.beginPath();
-            ctx.arc(BIKE_FIXED_X+10, wheelY-6, 8, 0, Math.PI*2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.arc(BIKE_FIXED_X+34, wheelY-6, 8, 0, Math.PI*2);
-            ctx.fill();
-            // flame deco on speed
-            if(currentSpeed>10) {
-                ctx.fillStyle = '#ff7744';
-                ctx.beginPath();
-                ctx.moveTo(BIKE_FIXED_X-6, wheelY-8);
-                ctx.lineTo(BIKE_FIXED_X-16, wheelY-14);
-                ctx.lineTo(BIKE_FIXED_X-6, wheelY-2);
-                ctx.fill();
-            }
-            // frame
-            ctx.fillStyle = '#e64b2e';
-            ctx.fillRect(BIKE_FIXED_X+12, bikeY+12, 24, 6);
-            ctx.fillStyle = '#b83218';
-            ctx.fillRect(BIKE_FIXED_X+16, bikeY+4, 18, 10);
-            // seat
-            ctx.fillStyle = '#392a1f';
-            ctx.fillRect(BIKE_FIXED_X+16, bikeY+2, 12, 5);
-            // handlebar
-            ctx.beginPath();
-            ctx.moveTo(BIKE_FIXED_X+34, bikeY+12);
-            ctx.lineTo(BIKE_FIXED_X+44, bikeY-6);
-            ctx.lineWidth = 4;
-            ctx.stroke();
-            // rider
-            ctx.fillStyle = '#f7cd91';
-            ctx.beginPath();
-            ctx.ellipse(BIKE_FIXED_X+28, bikeY-4, 7, 9, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.fillStyle = '#43301f';
-            ctx.fillRect(BIKE_FIXED_X+24, bikeY-2, 12, 7);
-            ctx.fillStyle = '#f4a261';
-            ctx.beginPath();
-            ctx.ellipse(BIKE_FIXED_X+28, bikeY-12, 9, 7, 0, 0, Math.PI*2);
-            ctx.fill();
-            // goggles
-            ctx.fillStyle = '#264653';
-            ctx.beginPath();
-            ctx.ellipse(BIKE_FIXED_X+24, bikeY-12, 2.5, 3, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.beginPath();
-            ctx.ellipse(BIKE_FIXED_X+32, bikeY-12, 2.5, 3, 0, 0, Math.PI*2);
-            ctx.fill();
-            ctx.restore();
-        }
-
-        function drawParticlesAndTexts() {
-            for(let p of particles) {
-                ctx.fillStyle = p.color;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2);
-                ctx.fill();
-            }
-            for(let t of floatingTexts) {
-                ctx.font = 'bold 18px "Segoe UI", monospace';
-                ctx.shadowBlur = 3;
-                ctx.fillStyle = t.color;
-                ctx.fillText(t.text, t.x, t.y);
-            }
-        }
-
-        function drawGameUI() {
-            if (!gameActive) {
-                ctx.font = 'bold 44px monospace';
-                ctx.fillStyle = '#2c231e';
-                ctx.shadowBlur = 0;
-                ctx.fillText('💀 GAME OVER 💀', W/2-170, H/2-40);
-                ctx.font = 'bold 20px monospace';
-                ctx.fillStyle = '#ffdd88';
-                ctx.fillText('press [ R ] or click RESTART', W/2-155, H/2+25);
-                ctx.font = '16px monospace';
-                ctx.fillStyle = '#ffe1a0';
-                ctx.fillText('collect shields to survive, keep combo high!', W/2-190, H/2+85);
-            }
-            ctx.font = 'bold 18px "Courier New"';
-            ctx.fillStyle = '#f9f1cf';
-            ctx.fillText(`COMBO x${combo}`, 30, 55);
-            if (shieldActive) {
-                ctx.fillStyle = '#8effea';
-                ctx.fillText(`🛡️ SHIELD ${Math.ceil(shieldTimer/60)}s`, W-160, 40);
-            }
-        }
-
-        // helper round rect
-        if (!CanvasRenderingContext2D.prototype.roundRect) {
-            CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r) {
-                if (w < 2*r) r = w/2;
-                if (h < 2*r) r = h/2;
-                this.moveTo(x+r, y);
-                this.lineTo(x+w-r, y);
-                this.quadraticCurveTo(x+w, y, x+w, y+r);
-                this.lineTo(x+w, y+h-r);
-                this.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
-                this.lineTo(x+r, y+h);
-                this.quadraticCurveTo(x, y+h, x, y+h-r);
-                this.lineTo(x, y+r);
-                this.quadraticCurveTo(x, y, x+r, y);
-                return this;
-            };
-        }
-
-        function render() {
-            drawBackground();
-            drawObstacles();
-            drawCoins();
-            drawPowerups();
-            drawBike();
-            drawParticlesAndTexts();
-            drawGameUI();
-            bgOffset = (bgOffset + currentSpeed * 0.4) % 400;
-        }
-
-        function gameLoop() {
-            updateGame();
-            render();
-            requestAnimationFrame(gameLoop);
-        }
-
-        // ----- JUMP & CONTROLS -----
-        function jumpAction(e) {
-            if (e) e.preventDefault();
-            if (gameActive && isGrounded) {
-                velY = JUMP_POWER;
-                isGrounded = false;
-                jumpOffset = -0.01;
-                addParticle(BIKE_FIXED_X+12, GROUND_Y-2, '#b3c7a0');
-            }
-        }
-
-        window.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowUp' || e.key === ' ' || e.key === 'Space') {
-                e.preventDefault();
-                jumpAction();
-            }
-            if (e.key === 'r' || e.key === 'R') {
-                e.preventDefault();
-                resetGame();
-                gameActive = true;
-                updateUI();
-            }
-        });
-        canvas.addEventListener('touchstart', (e) => { e.preventDefault(); jumpAction(); });
-        canvas.addEventListener('mousedown', (e) => { e.preventDefault(); jumpAction(); });
-        document.getElementById('restartButton').addEventListener('click', () => {
-            resetGame();
-            gameActive = true;
-            updateUI();
-        });
-
-        resetGame();
-        updateUI();
-        gameLoop();
-    })();
-</script>
+        // Initialize Application
+        renderQuestion();
+    </script>
 </body>
 </html>
